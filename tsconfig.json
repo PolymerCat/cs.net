@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-  ],
+, "pocketbase_0.39.11/pb_hooks/db-triggers.js.js"  ],
   "exclude": ["node_modules"]
 }

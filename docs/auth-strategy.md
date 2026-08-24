@@ -2,7 +2,7 @@
 Pocketbase auth docs - https://pocketbase.io/docs/authentication/ 
 
 
-// excerpt taken directly from supabase auth docs.....
+// notes taken directly from supabase auth docs.....
 
 A single client is considered authenticated as long as it sends valid **Authorization:YOUR_AUTH_TOKEN** header with the request.
 

@@ -1,17 +1,20 @@
 'use client';
-import Pocketbase from "pocketbase";
-import {useState} from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import pb from "../functions/client";
 
-
-const pb = new Pocketbase('http://127.0.0.1:8090');
 
 export default function SignupForm() {
+    const router = useRouter();
 
     const [login_signup, setLogin_signup] = useState(false); //logout = false, login = true
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    useEffect(() => pb.authStore.onChange(() => setIsLoggedIn(pb.authStore.isValid), true), []);
 
 
     function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -49,6 +52,7 @@ export default function SignupForm() {
 
             const record = await pb.collection('users').create(body);
             console.log('Created successfully:', record);
+            router.push("/home");
 
         }
         catch (error) {
@@ -64,23 +68,21 @@ export default function SignupForm() {
                 "password": password
             }
 
-            const authData = await pb.collection('users').authWithPassword(
+            await pb.collection('users').authWithPassword(
                 data.email,
                 data.password
             );
             console.log('Logged in', data.email);
+            router.push("/home");
 
         } catch (error) {
             console.error("Error logging in:", error);
         }
-        console.log(pb.authStore.isValid);
-        console.log(pb.authStore.token);
-        // console.log(pb.authStore.record.id);
     }
 
     return (
         <div className= "flex flex-col flex-1 items-center justify-center bg-white font-sans dark:bg-black">
-        <p className="font-extrabold">Logged In : {pb.authStore.isValid.toString()}</p>  
+        {/* <p className="font-extrabold"> Logged In : {isLoggedIn.toString()}</p> */}
         
 
         {/* Renders different headings based on login/logout state */}
