@@ -39,24 +39,28 @@ export default function SignupForm() {
     async function handleSignup(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault();
        
-        try{
+        try {
             const body = {
-            "email": email,
-            "emailVisibility": false,
-            "role": "alumni",
-            "avatar": null,
-            "username": username,
-            "password": password,
-            "passwordConfirm": confirmPassword
+                email,
+                emailVisibility: false,
+                role: "alumni",
+                username,
+                password,
+                passwordConfirm: confirmPassword,
             };
 
             const record = await pb.collection('users').create(body);
             console.log('Created successfully:', record);
+
+            // Authenticate user session so ProtectedPage allows access to /home
+            await pb.collection('users').authWithPassword(email, password);
             router.push("/home");
 
-        }
-        catch (error) {
+        } catch (error: any) {
             console.error("Error creating user:", error);
+            if (error?.response?.data) {
+                console.error("Validation errors:", error.response.data);
+            }
         }
     }
 
