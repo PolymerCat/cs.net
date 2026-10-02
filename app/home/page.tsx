@@ -196,7 +196,7 @@ export default function homepage(){
                             data={{ nodes: sampleNodes, links: sampleLinks }}
                             minTime={0}
                             maxTime={20}
-                            timeStep={1}
+                            timeStep={0.3}
                         />
                     </div>
                     
