@@ -101,10 +101,41 @@ export default function Homepage() {
         }
     };
 
+    const getAllDescendants = (startNodeId: string, edges: DataSet<any>) => {
+        const descendantNodeIds: string[] = [];
+        const descendantEdgeIds: string[] = [];
+        const queue = [startNodeId];
+
+        while (queue.length > 0) {
+            const currentId = queue.shift()!;
+            // Find all edges where this node is the source
+            const childEdges = edges.get({
+                filter: (item) => item.from === currentId
+            });
+
+            childEdges.forEach((edge: any) => {
+                descendantNodeIds.push(edge.to);
+                descendantEdgeIds.push(edge.id);
+                queue.push(edge.to);
+            });
+        }
+
+        return { descendantNodeIds, descendantEdgeIds };
+    };
+
     const handleNodeClick = useCallback(async (nodeId: string) => {
-        setIsLoadingNode(true);
         const nodes = nodesRef.current;
         const edges = edgesRef.current;
+
+        const { descendantNodeIds, descendantEdgeIds } = getAllDescendants(nodeId, edges);
+        
+        if (descendantNodeIds.length > 0) {
+            nodes.remove(descendantNodeIds);
+            edges.remove(descendantEdgeIds);
+            return;
+        }
+
+        setIsLoadingNode(true);
 
         try {
             if (["SE", "CI", "IC"].includes(nodeId)) {
@@ -127,8 +158,6 @@ export default function Homepage() {
                 const [programShort, batch] = nodeId.split("-");
                 const dbProgramName = programMap[programShort];
                 
-                // For clicking a batch directly, we still limit to a small number to prevent lag,
-                // but rely heavily on the search bar for finding specifics.
                 const students = await pb.collection('profile').getList(1, 20, {
                     filter: `program="${dbProgramName}" && batch="${batch}"`,
                     expand: 'user_id'
