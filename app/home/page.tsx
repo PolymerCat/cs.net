@@ -6,6 +6,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import pb from "@/functions/client";
 import { DataSet } from "vis-data";
 import AlumniGraph from "@/components/alumni-graph";
+import Image from "next/image";
 
 export default function Homepage() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -111,7 +112,6 @@ export default function Homepage() {
 
         while (queue.length > 0) {
             const currentId = queue.shift()!;
-            // Find all edges where this node is the source
             const childEdges = edges.get({
                 filter: (item) => item.from === currentId
             });
@@ -130,7 +130,6 @@ export default function Homepage() {
         const nodes = nodesRef.current;
         const edges = edgesRef.current;
 
-        // 1. Check if it's a student node first
         if (nodeId.startsWith("student-")) {
             const studentId = nodeId.replace("student-", "");
             try {
@@ -142,10 +141,9 @@ export default function Homepage() {
             } catch (error) {
                 console.error("Failed to load student profile:", error);
             }
-            return; // Stop execution, no need to expand/collapse
+            return;
         }
 
-        // 2. Check if node is already "open" by looking for descendants
         const { descendantNodeIds, descendantEdgeIds } = getAllDescendants(nodeId, edges);
         
         if (descendantNodeIds.length > 0) {
@@ -154,7 +152,6 @@ export default function Homepage() {
             return; 
         }
 
-        // 3. If it is "closed" (no descendants), fetch and expand
         setIsLoadingNode(true);
 
         try {
@@ -254,14 +251,17 @@ export default function Homepage() {
 
                         <div className="flex flex-col items-center gap-4">
                             {/* Profile Image */}
-                            <img 
+                            <Image 
                                 src={selectedStudent.expand?.user_id?.username 
                                     ? `https://campusonline2.usm.my/photo/StudentPic/${selectedStudent.expand.user_id.username}.jpg`
                                     : `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedStudent.full_name)}&background=random`}
                                 alt={selectedStudent.full_name}
+                                width={96}
+                                height={96}
                                 className="w-24 h-24 rounded-full border-4 border-slate-700 object-cover bg-slate-800"
                                 onError={(e) => {
-                                    (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedStudent.full_name)}&background=random`;
+                                    e.currentTarget.srcset = "";
+                                    e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedStudent.full_name)}&background=random`;
                                 }}
                             />
 
