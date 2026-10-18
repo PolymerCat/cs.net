@@ -22,6 +22,15 @@ const MAJORS = [
     'Intelligent Computing',
 ] as const;
 
+const BATCHES = [
+    '21/22',
+    '22/23',
+    '23/24',
+    '24/25',
+    '25/26',
+    '26/27',
+] as const;
+
 interface FormData {
     fullName: string;
     phone: string;
@@ -30,6 +39,7 @@ interface FormData {
     confirmPassword: string;
     academicStatus: string;
     major: string;
+    batch: string;
     jobTitle: string;
     linkedin: string;
     facebook: string;
@@ -45,6 +55,7 @@ const initialFormData: FormData = {
     confirmPassword: '',
     academicStatus: '',
     major: '',
+    batch:'',
     jobTitle: '',
     linkedin: '',
     facebook: '',
@@ -92,6 +103,7 @@ export default function OnboardingForm({ ic }: OnboardingFormProps) {
         if (!formData.academicStatus)
             newErrors.academicStatus = 'Academic status is required';
         if (!formData.major) newErrors.major = 'Major is required';
+        if (!formData.batch) newErrors.batch = 'Batch is required';
         if (
             formData.academicStatus === 'Alumni' &&
             !formData.jobTitle.trim()
@@ -154,6 +166,7 @@ export default function OnboardingForm({ ic }: OnboardingFormProps) {
                     personal_email: formData.personalEmail,
                     academic_status: formData.academicStatus,
                     program: formData.major,
+                    batch: formData.batch,
                     job_title:
                         formData.academicStatus === 'Alumni'
                             ? formData.jobTitle
@@ -340,6 +353,32 @@ export default function OnboardingForm({ ic }: OnboardingFormProps) {
                             {errors.major && (
                                 <p className="text-red-400 text-xs mt-1">
                                     {errors.major}
+                                </p>
+                            )}
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-1">
+                                Batch
+                            </label>
+                            <select
+                                value={formData.batch}
+                                onChange={(e) =>
+                                    updateField('batch', e.target.value)
+                                }
+                                className="w-full border border-gray-600 bg-black/50 text-white rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                            >
+                                <option value="">
+                                    Select your batch
+                                </option>
+                                {BATCHES.map((b) => (
+                                    <option key={b} value={b}>
+                                        {b}
+                                    </option>
+                                ))}
+                            </select>
+                            {errors.batch && (
+                                <p className="text-red-400 text-xs mt-1">
+                                    {errors.batch}
                                 </p>
                             )}
                         </div>
