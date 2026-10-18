@@ -51,8 +51,8 @@ export default function IcVerification() {
         setPhotoUrl(null);
         setShowPasswordLogin(false);
 
-        if (debounceRef.current) clearTimeout(debounceRef.current);
-        debounceRef.current = setTimeout(() => verifyStudent(value), 600);
+        // if (debounceRef.current) clearTimeout(debounceRef.current);
+        // debounceRef.current = setTimeout(() => verifyStudent(value), 600);
     }
 
     function handleBlur() {
