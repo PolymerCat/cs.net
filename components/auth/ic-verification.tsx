@@ -61,26 +61,18 @@ export default function IcVerification() {
     }
 
     async function handleConfirmYes() {
-        setStatus('confirmed');
+        setStatus('loading');
 
         try {
             let exists = false;
-            try {
-                const res = await fetch(`/api/check-user?ic=${encodeURIComponent(ic.trim())}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    exists = Boolean(data.exists);
-                }
-            } catch {
-                // Client-side fallback: direct check via PocketBase
-                try {
-                    const record = await pb.collection('users').getFirstListItem(`username = "${ic.trim()}"`);
-                    exists = Boolean(record);
-                    console.log("lamo")
-                } catch {
-                    exists = false;
-                    console.log('failed', ic)
-                }
+            
+            const res = await fetch(`/api/check-user?ic=${encodeURIComponent(ic.trim())}`);
+            
+            if (res.ok) {
+                const data = await res.json();
+                exists = Boolean(data.exists);
+            } else {
+                throw new Error(`Server returned status: ${res.status}`);
             }
 
             if (exists) {
@@ -88,7 +80,8 @@ export default function IcVerification() {
             } else {
                 router.push(`/onboarding?ic=${encodeURIComponent(ic.trim())}`);
             }
-        } catch {
+        } catch (error) {
+            console.error("User check failed:", error);
             setStatus('error');
         }
     }

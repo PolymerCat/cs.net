@@ -13,7 +13,7 @@ export async function GET(request: Request) {
         const pbServer = new PocketBase(process.env.NEXT_PUBLIC_DB_CONNECT);
 
         // 2. Authenticate as Admin to bypass the locked API rules
-        await pbServer.admins.authWithPassword(
+        await pbServer.collection('_superusers').authWithPassword(
             process.env.PB_ADMIN_EMAIL!,
             process.env.PB_ADMIN_PASSWORD!
         );
