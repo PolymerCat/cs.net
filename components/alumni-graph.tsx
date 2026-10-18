@@ -29,6 +29,11 @@ export default function AlumniGraph({ nodes, edges, onNodeClick }: AlumniGraphPr
         font: { color: "#ffffff", size: 14, face: "sans-serif" },
         borderWidth: 2,
         shadow: true,
+        color: {
+            background: "#1e293b",
+            border: "#3b82f6"
+        },
+        brokenImage: "https://ui-avatars.com/api/?name=Unknown&background=random"
       },
       edges: {
         width: 2,
