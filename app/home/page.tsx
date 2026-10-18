@@ -146,12 +146,25 @@ export const sampleLinks: TemporalLink[] = [
 
 export default function homepage(){
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [username, setUsername] = useState("user");
     useEffect(() => pb.authStore.onChange(() => setIsLoggedIn(pb.authStore.isValid), true), []);
-    let username = "user";
-
-    if (isLoggedIn){
-        username = pb.authStore.record?.username;
-    }
+    useEffect(() => {
+        // Only run the fetch if the user is actually logged in
+        if (isLoggedIn && pb.authStore.record?.id) {
+            pb.collection('profile')
+                .getFirstListItem(`user_id = "${pb.authStore.record.id}"`)
+                .then(model => {
+                    // Use the exact column name from your PocketBase database
+                    setUsername(model.full_name); 
+                })
+                .catch(err => {
+                    console.warn("Could not fetch profile:", err);
+                    setUsername(pb.authStore.record?.username || "user");
+                });
+        } else {
+            setUsername("user");
+        }
+    }, [isLoggedIn]);
 
     return(
         <ProtectedPage>
