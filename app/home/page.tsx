@@ -13,6 +13,9 @@ export default function Homepage() {
     const [isLoadingNode, setIsLoadingNode] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
 
+    const [selectedStudent, setSelectedStudent] = useState<any>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     const nodesRef = useRef(new DataSet([
         { id: "CS", label: "Computer Science", color: "#f97316", size: 40, font: { size: 20 } },
         { id: "SE", label: "Software Engineering", color: "#3b82f6", size: 30 },
@@ -127,14 +130,31 @@ export default function Homepage() {
         const nodes = nodesRef.current;
         const edges = edgesRef.current;
 
+        // 1. Check if it's a student node first
+        if (nodeId.startsWith("student-")) {
+            const studentId = nodeId.replace("student-", "");
+            try {
+                const profileRecord = await pb.collection('profile').getOne(studentId, {
+                    expand: 'user_id'
+                });
+                setSelectedStudent(profileRecord);
+                setIsModalOpen(true);
+            } catch (error) {
+                console.error("Failed to load student profile:", error);
+            }
+            return; // Stop execution, no need to expand/collapse
+        }
+
+        // 2. Check if node is already "open" by looking for descendants
         const { descendantNodeIds, descendantEdgeIds } = getAllDescendants(nodeId, edges);
         
         if (descendantNodeIds.length > 0) {
             nodes.remove(descendantNodeIds);
             edges.remove(descendantEdgeIds);
-            return;
+            return; 
         }
 
+        // 3. If it is "closed" (no descendants), fetch and expand
         setIsLoadingNode(true);
 
         try {
@@ -154,7 +174,7 @@ export default function Homepage() {
                     }
                 });
             }
-            else if (nodeId.includes("-") && !nodeId.startsWith("edge") && !nodeId.startsWith("student")) {
+            else if (nodeId.includes("-") && !nodeId.startsWith("edge")) {
                 const [programShort, batch] = nodeId.split("-");
                 const dbProgramName = programMap[programShort];
                 
@@ -179,14 +199,14 @@ export default function Homepage() {
                 
                 <div className="flex flex-col items-center justify-center p-8 gap-8">
                     <div className="flex flex-col p-6 gap-4 w-full max-w-4xl bg-slate-900 border border-slate-800 rounded-lg shadow-lg">
-                        <div className="flex justify-between items-start">
+                        <div className="flex flex-wrap justify-between items-start">
                             <div>
                                 <h1 className="text-3xl font-bold text-white">Welcome</h1>
                                 <p className="italic text-slate-400">{username}</p>
                             </div>
                             
                             {/* Search Bar */}
-                            <form onSubmit={handleSearch} className="flex gap-2">
+                            <form onSubmit={handleSearch} className="flex flex-wrap gap-2">
                                 <input 
                                     type="text" 
                                     value={searchQuery}
@@ -207,7 +227,7 @@ export default function Homepage() {
                     </div>
 
                     <div className="flex flex-col p-4 w-full max-w-4xl rounded-lg shadow-lg">
-                        <div className="flex justify-between items-center mb-4">
+                        <div className="flex flex-wrap justify-between items-center mb-4">
                             <p className="text-slate-300">Our growing network of alumni...</p>
                             {isLoadingNode && <span className="text-sm text-orange-400 animate-pulse">Loading data...</span>}
                         </div>
@@ -220,6 +240,93 @@ export default function Homepage() {
                     </div>
                 </div>
             </div>
+            {/* Student Profile Modal */}
+            {isModalOpen && selectedStudent && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 p-4 backdrop-blur-sm">
+                    <div className="bg-slate-900 border border-slate-700 rounded-xl p-6 w-full max-w-md shadow-2xl relative">
+                        {/* Close Button */}
+                        <button 
+                            onClick={() => setIsModalOpen(false)}
+                            className="absolute top-4 right-4 text-slate-400 hover:text-white transition"
+                        >
+                            ✕
+                        </button>
+
+                        <div className="flex flex-col items-center gap-4">
+                            {/* Profile Image */}
+                            <img 
+                                src={selectedStudent.expand?.user_id?.username 
+                                    ? `https://campusonline2.usm.my/photo/StudentPic/${selectedStudent.expand.user_id.username}.jpg`
+                                    : `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedStudent.full_name)}&background=random`}
+                                alt={selectedStudent.full_name}
+                                className="w-24 h-24 rounded-full border-4 border-slate-700 object-cover bg-slate-800"
+                                onError={(e) => {
+                                    (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedStudent.full_name)}&background=random`;
+                                }}
+                            />
+
+                            {/* Header Info */}
+                            <div className="text-center">
+                                <h2 className="text-2xl font-bold text-white">{selectedStudent.full_name}</h2>
+                                <p className="text-orange-400 font-medium">
+                                    {selectedStudent.program} • Batch {selectedStudent.batch}
+                                </p>
+                                <span className="inline-block mt-1 px-3 py-1 bg-slate-800 text-slate-300 text-xs rounded-full border border-slate-700">
+                                    {selectedStudent.academic_status}
+                                </span>
+                            </div>
+
+                            {/* Bio & Job Title */}
+                            <div className="w-full text-sm text-slate-300 space-y-3 mt-2">
+                                {selectedStudent.academic_status?.toLowerCase() === 'alumni' && selectedStudent.job_title && (
+                                    <div className="bg-slate-800/50 p-3 rounded-lg border border-slate-700/50">
+                                        <p className="font-semibold text-white mb-1">Current Role</p>
+                                        <p>{selectedStudent.job_title}</p>
+                                    </div>
+                                )}
+                                
+                                {selectedStudent.bio && (
+                                    <div>
+                                        <p className="font-semibold text-white mb-1">About</p>
+                                        <p className="italic text-slate-400">"{selectedStudent.bio}"</p>
+                                    </div>
+                                )}
+                                
+                                {selectedStudent.interests && (
+                                    <div>
+                                        <p className="font-semibold text-white mb-1">Interests</p>
+                                        <p>{selectedStudent.interests}</p>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Contact & Links */}
+                            <div className="w-full grid grid-cols-1 gap-2 mt-4 text-sm">
+                                {selectedStudent.personal_email && (
+                                    <a href={`mailto:${selectedStudent.personal_email}`} className="flex items-center gap-2 p-2 bg-slate-800 rounded hover:bg-slate-700 text-slate-300 transition">
+                                        📧 {selectedStudent.personal_email}
+                                    </a>
+                                )}
+                                {selectedStudent.phone && (
+                                    <a href={`tel:${selectedStudent.phone}`} className="flex items-center gap-2 p-2 bg-slate-800 rounded hover:bg-slate-700 text-slate-300 transition">
+                                        📱 {selectedStudent.phone}
+                                    </a>
+                                )}
+                                {selectedStudent.linkedin_url && (
+                                    <a href={selectedStudent.linkedin_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 p-2 bg-blue-900/30 text-blue-400 rounded hover:bg-blue-900/50 transition">
+                                        🔗 LinkedIn
+                                    </a>
+                                )}
+                                {selectedStudent.portfolio_url && (
+                                    <a href={selectedStudent.portfolio_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 p-2 bg-orange-900/30 text-orange-400 rounded hover:bg-orange-900/50 transition">
+                                        🌐 Portfolio
+                                    </a>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </ProtectedPage>
     );
 }
