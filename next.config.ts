@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'campusonline2.usm.my',
+        pathname: '/photo/StudentPic/**',
       },
       {
         protocol: 'https',

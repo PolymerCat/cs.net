@@ -255,6 +255,7 @@ export default function Homepage() {
                                 src={selectedStudent.expand?.user_id?.username 
                                     ? `https://campusonline2.usm.my/photo/StudentPic/${selectedStudent.expand.user_id.username}.jpg`
                                     : `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedStudent.full_name)}&background=random`}
+                                unoptimized
                                 alt={selectedStudent.full_name}
                                 width={96}
                                 height={96}
