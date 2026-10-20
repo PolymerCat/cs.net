@@ -48,18 +48,28 @@ export default function Homepage() {
         "IC": "Intelligent Computing"
     };
 
+    const getAvatarUrl = (student: any) => {
+        const user = student?.expand?.user_id;
+        
+        if (user?.avatar) {
+            return pb.files.getURL(user, user.avatar);
+        }
+        
+        if (user?.username) {
+            return `https://campusonline2.usm.my/photo/StudentPic/${user.username}.jpg`;
+        }
+        
+        return `https://ui-avatars.com/api/?name=${encodeURIComponent(student?.full_name || 'Student')}&background=random`;
+    };
+
     const addStudentNode = (student: any, programShort: string) => {
         const nodes = nodesRef.current;
         const edges = edgesRef.current;
         const studentNodeId = `student-${student.id}`;
         const batchNodeId = `${programShort}-${student.batch}`;
+        const imageUrl = getAvatarUrl(student);
 
         if (!nodes.get(studentNodeId)) {
-            const ic = student.expand?.user_id?.username; 
-            const imageUrl = ic 
-                ? `https://campusonline2.usm.my/photo/StudentPic/${ic}.jpg` 
-                : "https://ui-avatars.com/api/?name=" + encodeURIComponent(student.full_name); // Fallback
-
             nodes.add({
                 id: studentNodeId,
                 label: student.full_name,
@@ -78,6 +88,12 @@ export default function Homepage() {
                 id: `edge-${batchNodeId}-${studentNodeId}`,
                 from: batchNodeId,
                 to: studentNodeId
+            });
+        } else {
+            nodes.update({
+                id: studentNodeId,
+                image: imageUrl,
+                label: student.full_name
             });
         }
     };
@@ -216,11 +232,6 @@ export default function Homepage() {
                                 </button>
                             </form>
                         </div>
-                        {/* <div className="flex gap-4 flex-wrap mt-4">
-                            <button className="bg-white text-black px-4 py-2 rounded-lg hover:bg-gray-200 transition"> Alumni </button>
-                            <button className="bg-white text-black px-4 py-2 rounded-lg hover:bg-gray-200 transition"> Profile </button>
-                            <button className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition"> CS Network </button>
-                        </div> */}
                     </div>
 
                     <div className="flex flex-col p-4 w-full max-w-4xl rounded-lg shadow-lg">
@@ -237,11 +248,11 @@ export default function Homepage() {
                     </div>
                 </div>
             </div>
+
             {/* Student Profile Modal */}
             {isModalOpen && selectedStudent && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 p-4 backdrop-blur-sm">
                     <div className="bg-slate-900 border border-slate-700 rounded-xl p-6 w-full max-w-md shadow-2xl relative">
-                        {/* Close Button */}
                         <button 
                             onClick={() => setIsModalOpen(false)}
                             className="absolute top-4 right-4 text-slate-400 hover:text-white transition"
@@ -250,11 +261,9 @@ export default function Homepage() {
                         </button>
 
                         <div className="flex flex-col items-center gap-4">
-                            {/* Profile Image */}
+                            {/* Dynamic Profile Image */}
                             <Image 
-                                src={selectedStudent.expand?.user_id?.username 
-                                    ? `https://campusonline2.usm.my/photo/StudentPic/${selectedStudent.expand.user_id.username}.jpg`
-                                    : `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedStudent.full_name)}&background=random`}
+                                src={getAvatarUrl(selectedStudent)}
                                 unoptimized
                                 alt={selectedStudent.full_name}
                                 width={96}
@@ -270,7 +279,7 @@ export default function Homepage() {
                             <div className="text-center">
                                 <h2 className="text-2xl font-bold text-white">{selectedStudent.full_name}</h2>
                                 <p className="text-orange-400 font-medium">
-                                    {selectedStudent.program} • Batch {selectedStudent.batch}
+                                    {selectedStudent.program} - Batch {selectedStudent.batch}
                                 </p>
                                 <span className="inline-block mt-1 px-3 py-1 bg-slate-800 text-slate-300 text-xs rounded-full border border-slate-700">
                                     {selectedStudent.academic_status}
