@@ -103,9 +103,19 @@ export default function ProfilePage() {
 
     const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
+        
         if (file) {
+            const maxSizeInBytes = 2 * 1024 * 1024; // 2mb
+            
+            if (file.size > maxSizeInBytes) {
+                setMessage({ type: 'error', text: 'Avatar image must be smaller than 2MB.' });
+                e.target.value = '';
+                return;
+            }
+
+            setMessage({ type: '', text: '' });
             setAvatarFile(file);
-            setRemoveAvatarFlag(false); 
+            setRemoveAvatarFlag(false);
             setAvatarPreview(URL.createObjectURL(file));
         }
     };
