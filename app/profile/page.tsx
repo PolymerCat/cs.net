@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import TopNav from '@/components/topnav';
 import ProtectedPage from '@/components/protected-page';
 import pb from '@/functions/client';
+import imageCompression from 'browser-image-compression';
 
 export default function ProfilePage() {
     const [loading, setLoading] = useState(true);
@@ -16,6 +17,7 @@ export default function ProfilePage() {
     const [avatarFile, setAvatarFile] = useState<File | null>(null);
     const [avatarPreview, setAvatarPreview] = useState<string>('');
     const [removeAvatarFlag, setRemoveAvatarFlag] = useState(false);
+    const [isCompressing, setIsCompressing] = useState<boolean>(false);
 
     const [profileId, setProfileId] = useState('');
     const [profileData, setProfileData] = useState({
@@ -101,23 +103,52 @@ export default function ProfilePage() {
         setProfileData({ ...profileData, [e.target.name]: e.target.value });
     };
 
-    const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        
-        if (file) {
-            const maxSizeInBytes = 2 * 1024 * 1024; // 2mb
-            
-            if (file.size > maxSizeInBytes) {
-                setMessage({ type: 'error', text: 'Avatar image must be smaller than 2MB.' });
-                e.target.value = '';
-                return;
-            }
+        if (!file) return;
 
+        const maxAllowedSize = 2 * 1024 * 1024; 
+        let fileToUpload = file;
+
+        if (file.size > maxAllowedSize) {
+            setIsCompressing(true);
+            setMessage({ type: '', text: 'Compressing image...' });
+
+            try {
+                const options = {
+                    maxSizeMB: 1.5,
+                    maxWidthOrHeight: 1024,
+                    useWebWorker: true,
+                };
+
+                const compressedBlob = await imageCompression(file, options);
+                
+                fileToUpload = new File([compressedBlob], file.name, {
+                    type: compressedBlob.type,
+                });
+
+                const originalMB = (file.size / (1024 * 1024)).toFixed(2);
+                const compressedMB = (fileToUpload.size / (1024 * 1024)).toFixed(2);
+
+                setMessage({
+                    type: 'success',
+                    text: `Compressed from ${originalMB}MB down to ${compressedMB}MB!`,
+                });
+            } catch (error) {
+                console.error('Compression error:', error);
+                setMessage({ type: 'error', text: 'Failed to compress image. Please choose another file.' });
+                e.target.value = '';
+                setIsCompressing(false);
+                return;
+            } finally {
+                setIsCompressing(false);
+            }
+        } else {
             setMessage({ type: '', text: '' });
-            setAvatarFile(file);
-            setRemoveAvatarFlag(false);
-            setAvatarPreview(URL.createObjectURL(file));
         }
+
+        setAvatarFile(fileToUpload);
+        setAvatarPreview(URL.createObjectURL(fileToUpload));
     };
 
     
@@ -241,6 +272,11 @@ export default function ProfilePage() {
                                         )}
                                     </div>
                                 </label>
+                                {isCompressing && (
+                                    <p className="text-sm text-orange-400 animate-pulse mt-2">
+                                        Compressing high-resolution photo...
+                                    </p>
+                                )}
                             </div>
                         </section>
 
