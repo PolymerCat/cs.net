@@ -22,25 +22,19 @@ export default function TopNav() {
                         href="/home"
                         className="hover:text-indigo-600 transition"
                     >
-                        Alumni
+                        Network
                     </a>
                     <a
-                        href="/home"
+                        href="/profile"
                         className="hover:text-indigo-600 transition"
                     >
-                        Companies
-                    </a>
-                    <a
-                        href="/home"
-                        className="hover:text-indigo-600 transition"
-                    >
-                        Development
+                        Profile
                     </a>
                 </nav>
                 <div className="flex items-center space-x-4">
                     <button
                         onClick={handleLogout}
-                        className="bg-black text-orange-400 text-sm font-medium px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
+                        className="bg-black text-orange-400 text-sm font-medium px-4 py-2 rounded-lg hover:bg-indigo-700 hover:text-white cursor-pointer transition"
                     >
                         Logout
                     </button>

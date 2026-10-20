@@ -216,11 +216,11 @@ export default function Homepage() {
                                 </button>
                             </form>
                         </div>
-                        <div className="flex gap-4 flex-wrap mt-4">
+                        {/* <div className="flex gap-4 flex-wrap mt-4">
                             <button className="bg-white text-black px-4 py-2 rounded-lg hover:bg-gray-200 transition"> Alumni </button>
                             <button className="bg-white text-black px-4 py-2 rounded-lg hover:bg-gray-200 transition"> Profile </button>
                             <button className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition"> CS Network </button>
-                        </div>
+                        </div> */}
                     </div>
 
                     <div className="flex flex-col p-4 w-full max-w-4xl rounded-lg shadow-lg">
