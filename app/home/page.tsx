@@ -329,7 +329,7 @@ export default function Homepage() {
                                 )}
                                 {selectedStudent.portfolio_url && (
                                     <a href={selectedStudent.portfolio_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 p-2 bg-orange-900/30 text-orange-400 rounded hover:bg-orange-900/50 transition">
-                                        🌐 Portfolio
+                                        🌐 Website
                                     </a>
                                 )}
                             </div>
