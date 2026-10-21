@@ -23,12 +23,14 @@ const MAJORS = [
 ] as const;
 
 const BATCHES = [
+    '20/21',
     '21/22',
     '22/23',
     '23/24',
     '24/25',
     '25/26',
     '26/27',
+    '27/28'
 ] as const;
 
 interface FormData {
