@@ -151,7 +151,6 @@ export default function ProfilePage() {
         setAvatarPreview(URL.createObjectURL(fileToUpload));
     };
 
-    
     const handleRemoveAvatar = () => {
         setAvatarFile(null);
         setRemoveAvatarFlag(true);
@@ -163,6 +162,16 @@ export default function ProfilePage() {
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!profileData.program.trim()) {
+            setMessage({ type: 'error', text: 'Program / Major is required.' });
+            return;
+        }
+        if (!profileData.batch.trim()) {
+            setMessage({ type: 'error', text: 'Batch is required.' });
+            return;
+        }
+
         setSaving(true);
         setMessage({ type: '', text: '' });
 
@@ -321,13 +330,30 @@ export default function ProfilePage() {
                                         <option value="Alumni">Alumni</option>
                                     </select>
                                 </label>
-                                <FormInput label="Program / Major" name="program" value={profileData.program} onChange={handleProfileChange} />
+                                
                                 <label className="flex flex-col gap-1">
-                                    <span className="text-sm font-medium text-gray-300">Batch</span>
+                                    <span className="text-sm font-medium text-gray-300">Program / Major <span className="text-red-400">*</span></span>
+                                    <select
+                                        name="program"
+                                        value={profileData.program}
+                                        onChange={handleProfileChange}
+                                        required
+                                        className="bg-black/50 border border-gray-600 rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-orange-400 text-white"
+                                    >
+                                        <option value="">Select Program...</option>
+                                        <option value="Software Engineering">Software Engineering</option>
+                                        <option value="Intelligent Computing">Intelligent Computing</option>
+                                        <option value="Computing Infrastructure">Computing Infrastructure</option>
+                                    </select>
+                                </label>
+
+                                <label className="flex flex-col gap-1">
+                                    <span className="text-sm font-medium text-gray-300">Batch <span className="text-red-400">*</span></span>
                                     <select
                                         name="batch"
                                         value={profileData.batch}
                                         onChange={handleProfileChange}
+                                        required
                                         className="bg-black/50 border border-gray-600 rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-orange-400 text-white"
                                     >
                                         <option value="">Select Batch...</option>
