@@ -331,6 +331,9 @@ export default function ProfilePage() {
                                         className="bg-black/50 border border-gray-600 rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-orange-400 text-white"
                                     >
                                         <option value="">Select Batch...</option>
+                                        <option value="20/21">20/21</option>
+                                        <option value="21/22">21/22</option>
+                                        <option value="22/23">22/23</option>
                                         <option value="23/24">23/24</option>
                                         <option value="24/25">24/25</option>
                                         <option value="25/26">25/26</option>
