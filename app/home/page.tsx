@@ -19,9 +19,9 @@ export default function Homepage() {
 
     const nodesRef = useRef(new DataSet([
         { id: "CS", label: "Computer Science", color: "#f97316", size: 40, font: { size: 20 } },
-        { id: "SE", label: "Software Engineering", color: "#3b82f6", size: 30 },
-        { id: "CI", label: "Computing Infrastructure", color: "#10b981", size: 30 },
-        { id: "IC", label: "Intelligent Computing", color: "#8b5cf6", size: 30 },
+        { id: "SE", label: "Software Engineering", color: "#f63b3b", size: 30 },
+        { id: "CI", label: "Computing Infrastructure", color: "#189bf3", size: 30 },
+        { id: "IC", label: "Intelligent Computing", color: "#1aee2c", size: 30 },
     ]));
     
     const edgesRef = useRef(new DataSet([
