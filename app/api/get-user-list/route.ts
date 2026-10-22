@@ -1,18 +1,16 @@
-import { useState, useEffect } from 'react';
+import { NextResponse } from 'next/server';
 import pb from '@/functions/client';
 
-
-export default async function getUsers() {
+export async function GET() {
     try {
-        // fetch a paginated records list
         const records = await pb.collection('profile').getFullList({
             sort: 'full_name',
-            $autoCancel: false, // Disable auto-cancellation of requests
+            requestKey: null,
         });
-        return Promise.resolve(records); // Return the list of user records
 
+        return NextResponse.json(records);
     } catch (error) {
-        console.error('Error fetching data:', error);
-        return Promise.reject(error);
+        console.error('Error fetching profiles:', error);
+        return NextResponse.json({ error: 'Unable to fetch profiles.' }, { status: 500 });
     }
 }
