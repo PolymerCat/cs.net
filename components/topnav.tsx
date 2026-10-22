@@ -22,6 +22,12 @@ export default function TopNav() {
                         href="/home"
                         className="hover:text-indigo-600 transition"
                     >
+                        Home
+                    </a>
+                    <a
+                        href="/database"
+                        className="hover:text-indigo-600 transition"
+                    >
                         Network
                     </a>
                     <a
