@@ -251,7 +251,7 @@ export default function Homepage() {
             {/* Student Profile Modal */}
             {isModalOpen && selectedStudent && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 p-4 backdrop-blur-sm">
-                    <div className="bg-slate-900 border border-slate-700 rounded-xl p-6 w-full max-w-md shadow-2xl relative">
+                    <div className="bg-slate-900 max-h-[90vh] overflow-auto scrollbar-thin scrollbar-thumb-orange-400 scrollbar-track-slate-700 border border-slate-700 rounded-xl p-6 w-full max-w-md shadow-2xl relative">
                         <button 
                             onClick={() => setIsModalOpen(false)}
                             className="absolute top-4 right-4 text-slate-400 hover:text-white transition"
@@ -312,25 +312,108 @@ export default function Homepage() {
                             {/* Contact & Links */}
                             <div className="w-full grid grid-cols-1 gap-2 mt-4 text-sm">
                                 {selectedStudent.personal_email && (
-                                    <a href={`mailto:${selectedStudent.personal_email}`} className="flex items-center gap-2 p-2 bg-slate-800 rounded hover:bg-slate-700 text-slate-300 transition">
-                                        📧 {selectedStudent.personal_email}
+                                    <a href={`mailto:${selectedStudent.personal_email}`} className="flex flex-col p-2 px-3 bg-slate-800 rounded hover:bg-slate-700 text-slate-300 transition">
+                                        <span className="font-semibold">Email</span>
+                                        <span>{selectedStudent.personal_email}</span>
                                     </a>
                                 )}
                                 {selectedStudent.phone && (
-                                    <a href={`tel:${selectedStudent.phone}`} className="flex items-center gap-2 p-2 bg-slate-800 rounded hover:bg-slate-700 text-slate-300 transition">
-                                        📱 {selectedStudent.phone}
+                                    <a href={`tel:${selectedStudent.phone}`} className="flex flex-col p-2 px-3 bg-slate-800 rounded hover:bg-slate-700 text-slate-300 transition">
+                                        <span className="font-semibold">Phone</span>
+                                        <span>{selectedStudent.phone}</span>
                                     </a>
                                 )}
-                                {selectedStudent.linkedin_url && (
-                                    <a href={selectedStudent.linkedin_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 p-2 bg-blue-900/30 text-blue-400 rounded hover:bg-blue-900/50 transition">
-                                        🔗 LinkedIn
-                                    </a>
-                                )}
-                                {selectedStudent.portfolio_url && (
-                                    <a href={selectedStudent.portfolio_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 p-2 bg-orange-900/30 text-orange-400 rounded hover:bg-orange-900/50 transition">
-                                        🌐 Website
-                                    </a>
-                                )}
+                            </div>
+                            <div className="flex flex-wrap items-center justify-center gap-3">
+                                <button
+                                    type="button"
+                                    aria-label="Open LinkedIn profile"
+                                    disabled={!selectedStudent.linkedin_url}
+                                    className="rounded-xl bg-white p-2 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-40 sm:p-2.5"
+                                    onClick={() => {
+                                        if (selectedStudent.linkedin_url) {
+                                            window.open(selectedStudent.linkedin_url, '_blank', 'noopener,noreferrer');
+                                        }
+                                    }}
+                                >
+                                    <Image
+                                        src="/icons/linkedin-icon-colored.svg"
+                                        alt="LinkedIn logo"
+                                        title="LinkedIn"
+                                        width={64}
+                                        height={64}
+                                        priority
+                                        className="h-6 w-6 sm:h-7 sm:w-7"
+                                    />
+                                </button>
+
+                                <button
+                                    type="button"
+                                    aria-label="Open Instagram profile"
+                                    disabled={!selectedStudent.instagram_url}
+                                    className="rounded-xl bg-white p-2 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-40 sm:p-2.5"
+                                    onClick={() => {
+                                        if (selectedStudent.instagram_url) {
+                                            window.open(selectedStudent.instagram_url, '_blank', 'noopener,noreferrer');
+                                        }
+                                    }}
+                                >
+                                    <Image
+                                        src="/icons/ig-icon-colored.svg"
+                                        alt="Instagram logo"
+                                        title="Instagram"
+                                        width={64}
+                                        height={64}
+                                        priority
+                                        className="h-6 w-6 sm:h-7 sm:w-7"
+                                    />
+                                </button>
+
+                                <button
+                                    type="button"
+                                    aria-label="Open Facebook profile"
+                                    disabled={!selectedStudent.facebook_url}
+                                    className="rounded-xl bg-white p-2 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-40 sm:p-2.5"
+                                    onClick={() => {
+                                        if (selectedStudent.facebook_url) {
+                                            window.open(selectedStudent.facebook_url, '_blank', 'noopener,noreferrer');
+                                        }
+                                    }}
+                                >
+                                    <Image
+                                        src="/icons/github-icon-black.svg"
+                                        alt="GitHub logo"
+                                        title="GitHub"
+                                        width={64}
+                                        height={64}
+                                        priority
+                                        className="h-6 w-6 sm:h-7 sm:w-7"
+                                    />
+                                </button>
+
+                                <button
+                                    type="button"
+                                    aria-label="Open portfolio"
+                                    disabled={!selectedStudent.portfolio_url}
+                                    className="rounded-xl bg-white p-2 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-40 sm:p-2.5"
+                                    onClick={() => {
+                                        if (selectedStudent.portfolio_url) {
+                                            window.open(selectedStudent.portfolio_url, '_blank', 'noopener,noreferrer');
+                                        }
+                                    }}
+                                >
+                                    <Image
+                                        src="/icons/cmd-icon.svg"
+                                        alt="Portfolio logo"
+                                        title="Portfolio"
+                                        width={64}
+                                        height={64}
+                                        priority
+                                        className="h-6 w-6 sm:h-7 sm:w-7"
+                                    />
+                                </button>
+                                
+
                             </div>
                         </div>
                     </div>
