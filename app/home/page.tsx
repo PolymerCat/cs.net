@@ -13,7 +13,6 @@ export default function Homepage() {
     const [username, setUsername] = useState("user");
     const [isLoadingNode, setIsLoadingNode] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
-
     const [selectedStudent, setSelectedStudent] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
