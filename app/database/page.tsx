@@ -1,10 +1,10 @@
 'use client';
 
 import { useDeferredValue, useEffect, useState } from 'react';
+import Link from 'next/link';
 import TopNav from '@/components/topnav';
 import ProtectedPage from '@/components/protected-page';
 import pb from '@/functions/client';
-import UserProfile from '@/app/user-profile/page';
 
 type Profile = {
     id: string;
@@ -163,9 +163,13 @@ export default function Page() {
                                                 />
                                             </td>
                                             <td className="px-5 py-4 font-medium text-white">
-                                                <a href={`/user-profile/${profile.personal_email}`} className="text-orange-400 hover:underline">
-                                                    {profile.full_name || 'Unnamed user'}
-                                                </a>
+                                                {profile.personal_email ? (
+                                                    <Link href={`/user-profile/${encodeURIComponent(profile.personal_email)}`} className="text-orange-400 hover:underline">
+                                                        {profile.full_name || 'Unnamed user'}
+                                                    </Link>
+                                                ) : (
+                                                    profile.full_name || 'Unnamed user'
+                                                )}
                                             </td>
                                             <td className="px-5 py-4">{profile.personal_email || '-'}</td>
                                             <td className="px-5 py-4">{profile.program || '-'}</td>
