@@ -32,6 +32,9 @@ export default function Page() {
     const [error, setError] = useState('');
     const deferredSearchQuery = useDeferredValue(searchQuery);
 
+    
+    
+
     function getAvatarUrl(profile: Profile) {
         const user = profile.expand?.user_id;
 
@@ -79,6 +82,20 @@ export default function Page() {
             ].some((value) => value?.toLowerCase().includes(normalizedQuery)),
         )
         : profiles;
+
+    
+    function getProgramBadgeClass(program?: string) {
+        switch (program) {
+            case 'Software Engineering':
+                return 'border-red-400/50 bg-red-400/10 text-red-300';
+            case 'Computing Infrastructure':
+                return 'border-blue-400/50 bg-blue-400/10 text-blue-300';
+            case 'Intelligent Computing':
+                return 'border-green-400/50 bg-green-400/10 text-green-300';
+            default:
+                return 'border-gray-600 bg-gray-800/70 text-gray-300';
+        }
+    }
 
     return (
         <ProtectedPage>
@@ -172,7 +189,11 @@ export default function Page() {
                                                 )}
                                             </td>
                                             <td className="px-5 py-4">{profile.personal_email || '-'}</td>
-                                            <td className="px-5 py-4">{profile.program || '-'}</td>
+                                            <td className="px-5 py-4">
+                                                <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-medium ${getProgramBadgeClass(profile.program)}`}>
+                                                    {profile.program || '-'}
+                                                </span>
+                                            </td>
                                             <td className="px-5 py-4">{profile.batch || '-'}</td>
                                             <td className="px-5 py-4">{profile.academic_status || '-'}</td>
                                             <td className="px-5 py-4">{profile.grad_year || '-'}</td>
