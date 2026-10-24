@@ -86,17 +86,22 @@ export default function TopNav() {
                     style={{width:"250px"}}
                     onClick={e => e.stopPropagation()}
                 >
-                    <button className='self-end' onClick={hideMobileMenu}>
-                        <Image
-                            src="/icons/close.svg"
-                            alt="LinkedIn logo"
-                            title="LinkedIn"
-                            width={64}
-                            height={64}
-                            priority
-                            className="h-6 w-6 sm:h-7 sm:w-7 text-orange-400"
-                        />
-                    </button>
+                    <div className='flex items-center justify-between'>
+                        <span className="text-3xl font-bold tracking-tight text-orange-400">
+                            CS.NET
+                        </span>
+                        <button onClick={hideMobileMenu}>
+                            <Image
+                                src="/icons/close.svg"
+                                alt="LinkedIn logo"
+                                title="LinkedIn"
+                                width={64}
+                                height={64}
+                                priority
+                                className="h-6 w-6 sm:h-7 sm:w-7 text-orange-400"
+                            />
+                        </button>
+                    </div>
                     <a href="/home">Home</a>
                     <a href="/database">Network</a>
                     <a href="/profile">Profile</a>
